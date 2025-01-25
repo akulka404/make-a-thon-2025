@@ -165,5 +165,4 @@ def send_to_api(data):
 if __name__ == "__main__":
     capture_image_from_feed()
 
-
-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
+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
