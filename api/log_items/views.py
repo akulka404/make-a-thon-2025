@@ -95,18 +95,31 @@ def update_user_name(request, name):
             return JsonResponse(tutorial_serializer.data)
         return JsonResponse(tutorial_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-@api_view(['GET'])
+@api_view(['GET', 'PUT'])
 def food_data_detail_by_id(request, food_id):
     """
-    Fetch a single FOOD_DATA record by its 'food_id'.
+    Fetch or update a FOOD_DATA record by its 'food_id'.
     """
     try:
+        # Fetch the food item by ID
         food_obj = Tutorial.objects.get(food_id=food_id)  # 'Tutorial' alias is actually FOOD_DATA
     except Tutorial.DoesNotExist:
         return JsonResponse({'message': 'Food item does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = TutorialSerializer(food_obj)
-    return JsonResponse(serializer.data, safe=False)
+    if request.method == 'GET':
+        # Return the food item details
+        serializer = TutorialSerializer(food_obj)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'PUT':
+        # Parse the incoming JSON data
+        food_data = JSONParser().parse(request)
+        # Update the food item
+        serializer = TutorialSerializer(food_obj, data=food_data, partial=True)  # partial=True allows partial updates
+        if serializer.is_valid():
+            serializer.save()  # Save the updates
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

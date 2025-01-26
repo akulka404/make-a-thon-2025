@@ -12,4 +12,5 @@ urlpatterns = [
     path('food_data/<int:food_id>/', views.food_data_detail_by_id, name='food_data_detail_by_id'),
     # NEW: Detail by Name
     path('food_data/name/<str:food_name>/', views.food_data_detail_by_name, name='food_data_detail_by_name'),
+    path('food_data/<int:food_id>/', views.food_data_detail_by_id, name='food_data_detail_by_id'),
 ]
